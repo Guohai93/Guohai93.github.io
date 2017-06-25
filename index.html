@@ -208,42 +208,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            分类
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
-            
-            关于
-          </a>
-        </li>
-      
-        
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
             归档
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
           </a>
         </li>
       
@@ -266,138 +236,6 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/25/初学者/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="GuoHai">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/me.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="生如夏花">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/06/25/初学者/" itemprop="url">初学者</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-25T09:57:31+08:00">
-                2017-06-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/06/25/初学者/" class="leancloud_visitors" data-flag-title="初学者">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="记录自己学习的历程"><a href="#记录自己学习的历程" class="headerlink" title="记录自己学习的历程"></a>记录自己学习的历程</h3><p>导言：本文对自然语言处理领域的句子表示问题进行详细探讨，首先简介了重要的神经网络知识，包括循环神经网络和注意力机制，接着就句子表示问题的研究领域介绍了相关的工作，然后详细剖析了一种二维矩阵表示句子的模型，阐述如何将自注意力机制引入句子表示中，实验表明这种表示方法具有很好的效果，不仅可以提高在具体任务的准确率，而且模型具有表示的可解释性。</p>
-<p>1 简介       </p>
-<p>1.1   问题定义</p>
-<p>自然语言处理领域中一个重要的问题就是在计算机中如何表示词、句子、文档，在深度学习热潮兴起之前，使用最为广泛的便是词袋模型(bag-of-words), 一种稀疏的、忽略词序信息、无法体现词之间语义相似的文档表示方法。直到2013年word2vec问世，一种利用神经网络的方法(Bengio et al., 2003;Mikolov et al., 2013)将词具体表示为稠密、低维、连续的词向量(word embedding)，并且语义上相似或相关的词，得到的表示向量也相近，这样的特性使得word2vec获得巨大成功。如果已经获得词的向量表示，那如何表示句子和文档呢？自然语言中词构成句子，句子构成文档，但是计算机中如果仅仅将词向量简单堆砌成句子和文档，效果可想而知是不尽人意的。本文主要研究的问题就是句子的表示，列举相关的研究工作，并且重点深入理解二维矩阵方法表示句子的模型(Lin et al., 2017)，该模型提出使用自注意力机制方法对句子进行表示，同时表示内容具有一定解释性。</p>
-<p>1.2   预备知识</p>
-<p>1.2.1   循环神经网络</p>
-<p>循环神经网络通过循环方式逐个输入文本中的各个词，并维护一个隐藏层，保留所有的上文信息。模型结构如图1所示，从网络结构上看，每个词与代表所有上文的隐藏层组合成新的隐藏层，从文本的第一个词循环计算到最后一个词，最后一个词对应的隐藏层代表了整个文本的语义。该网络结构的层数由输入文本词的数量决定，因此使用传统方法训练时，会遇到梯度消失或梯度爆炸的问题，也称为长期依赖问题。</p>
-<p><img src="file:////Users/guohai/Library/Group%20Containers/UBF8T346G9.Office/msoclip1/01/clip_image002.png" alt="img"></p>
-<p>图1 循环神经网络结构图</p>
-<p>为解决长期依赖问题，各种改进的模型相继提出，Hochreiter和Schmidhuber在1997年提出了LSTM(longshort term memory neural network)模型，引入记忆单元，控制循环网络中信息累积速度，并可以选择遗忘之前累积的信息，从而实现保存长距离的信息，减缓长期依赖问题。一种比LSTM更加简化的GRU(gatedrecurrent unit)神经网络也被提出，GRU将LSTM中输入门和遗忘门合并成一个更新门，同时合并内部记忆和输出状态，GRU中主要有两个门，即更新门和重置门，更新门控制当前的状态需要遗忘多少历史信息和接受多少新信息，重置门控制候选状态中有多少信息是从历史信息中得到。与此同时，自然语言处理有些任务中一个时刻的输出不但和过去时刻的信息有关，也和后续时刻的信息有关，因此提出双向的循环神经网络，即增加一个按照时间逆序来传递信息的网络层，输入相同，只是信息传递的方向不同。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
     
       
 
@@ -575,7 +413,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">1</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -642,6 +480,26 @@
 
 
         
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
 
         
       </div>
